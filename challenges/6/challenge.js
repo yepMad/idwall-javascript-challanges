@@ -46,6 +46,40 @@
 *    ]
  */
 
-const combinate = (set, target) => {}
+const combinate = (set, target) => {
+  if (!Array.isArray(set) || !set.length) {
+    return [];
+  }
+
+  return getCombinations(set, target);
+}
+
+function getCombinations(set, target) {
+  const combinations = [];
+  const temp = [];
+
+  set.sort();
+  findValues(set, target, 0, temp, combinations);
+
+  return combinations;
+}
+
+function findValues(set, target, index, temp, combinations) {
+  if (target === 0) {
+    combinations.push([...temp]);
+    return;
+  }
+
+  for (let i = index; i < set.length; i++) {
+    if (set[i] > target) {
+      return;
+    }
+
+    const newTemp = [...temp, set[i]];
+    const newTarget = target - set[i];
+
+    findValues(set, newTarget, i, newTemp, combinations);
+  }
+}
 
 module.exports = combinate

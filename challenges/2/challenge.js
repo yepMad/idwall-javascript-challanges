@@ -52,6 +52,45 @@
  *  }
  */
 
-const normalizeData = unormalized => {}
+const normalizeData = unormalized => {
+  const { id, user, reports } = unormalized;
+
+  const normalized = {
+    results: {},
+    users: {},
+    reports: {}
+  };
+
+  definePropertyIntoObject(normalized.results, id, {
+    id,
+    user: user.id,
+    reports: reports.map(i => i.id)
+  });
+
+  definePropertyIntoObject(normalized.users, user.id, {
+    id: user.id,
+    name: user.name
+  });
+
+  reports.forEach(report => {
+    definePropertyIntoObject(normalized.reports, report.id, {
+      id: report.id,
+      user: user.id,
+      document: report.result.document,
+      status: report.result.status
+    });
+  })
+
+  return normalized;
+}
+
+function definePropertyIntoObject(object, key, value) {
+  Object.defineProperty(object, key, {
+    enumerable: true,
+    configurable: false,
+    writable: false,
+    value
+  });
+}
 
 module.exports = normalizeData
